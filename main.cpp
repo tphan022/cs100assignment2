@@ -62,24 +62,56 @@ bool run(char** runcommand) {
 void connectors(vector<string>* v, char** command) {
 
 	int  successful = 0;
-	bool connected = false;
-	bool andconnect = false;
-	bool orconnect = false;
-	bool semicolon = false;
-	int i = 0;
+	unsigned int i = 0;
 	int command_i = 0;
 	while(i < v->size()) {
-		if(strcmp(v->at(i), '#') == 0) {
+		if(v->at(i) == "#") {
+			command[command_i] = 0;
+			successful = run(command);
 			break;
 		}
-		if(strcmp(v->at(i),"&&") == 0 && successful == 1 && !connected) {
-			andconnect = true;
-			connected = true;
-			i++;
+		if(v->at(i) == "&&") {
+			command[command_i] = 0;
+			successful = run(command);
+			if(!successful) {
+				break;
+			}
+			else {
+				command_i = 0;
+				i++;
+			}
+
 		}
-		else if(strcmp(v->at(i),"||") == 0 && 
-				successful == -1 && !connected); {
-			orconnect = true;
+		else if(v->at(i) == "||") {
+			command[command_i] = 0;
+			successful = run(command);
+			if(!successful) {
+				command_i = 0;
+				i++;
+			}
+			else {
+				break;
+			}
+		}
+		//else if(v->at(i).at(v->at(i).size() - 1) == ";") {
+		//	string temp = v->at(i).substr(0,v->at(i).size()-1);
+		//	command[command_i] = (char*)temp.c_str();
+		//	command[command_i + 1] = 0;
+		//	successful = run(command);
+		//	i++;
+		//	command_i = 0;
+		//}
+			
+		else {
+			command[command_i] = (char*)v->at(i).c_str();
+			command[command_i+1] = 0;
+			command_i++;
+			i++;
+			if(i >= v->size()) {
+				successful = run(command);
+				break;
+			}
+		}
 	}
 		
 }
@@ -98,13 +130,7 @@ int main(void) {
 			cout << tokens.at(i) << " ";
 		}
 		cout << endl;
-		string tempo = tokens.at(0);
-		int q = 0;
-		temp[q] = (char*)tokens.at(0).c_str();
-		temp[q+1] = 0;
-		q++;
-		run(temp);
-		cout << endl << "Tempval: " << *temp << endl;
+		connectors(&tokens,command);
 		tokens.clear();
 	}
 
