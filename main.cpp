@@ -47,16 +47,19 @@ bool run(char** runcommand) {
 		cout << "Error, forking failed" << endl;
 		exit(1);
 	}
-	if(PID == 0) {
+	else if(PID == 0) {
 		if(execvp(*runcommand, runcommand) < 0) {
 			cout << "running error" << endl;
 			exit(1);
 		}
-		else {
-			while(wait(&s) != PID) {};
-			return true;
-		}
 	}
+	else {
+		while(wait(&s) != PID) {};
+		return true;
+	}
+	if(s != 0) {
+		return false;
+	}	
 	return true;
 }
 
@@ -134,10 +137,10 @@ int main(void) {
 			exit(0);
 			break;
 		}
-		for(unsigned int i = 0; i < tokens.size(); i++) {
-			cout << tokens.at(i) << " ";
-		}
-		cout << endl;
+		//for(unsigned int i = 0; i < tokens.size(); i++) {
+		//	cout << tokens.at(i) << " ";
+		//}
+		//cout << endl;
 		connectors(&tokens,command);
 		tokens.clear();
 	}
