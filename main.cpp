@@ -47,14 +47,15 @@ bool run(char** runcommand) {
 		cout << "Error, forking failed" << endl;
 		exit(1);
 	}
-	else if(PID == 0) {
+	if(PID == 0) {
 		if(execvp(*runcommand, runcommand) < 0) {
-			cout << "running error";
-			return false;
+			cout << "running error" << endl;
+			exit(1);
 		}
-	}
-	else {
-		while(wait(&s) != PID) {};
+		else {
+			while(wait(&s) != PID) {};
+			return true;
+		}
 	}
 	return true;
 }
@@ -119,11 +120,18 @@ void connectors(vector<string>* v, char** command) {
 int main(void) {
 	char argument[1024];
 	vector<string> tokens;
+	bool stop = false;
 	char* command[64];
 	while(1) {
 		display(*argument);
 		tokenizing(*argument,&tokens);
-		if(tokens.at(0) == "exit") {
+		for(unsigned int i = 0; i < tokens.size(); i++) {
+			if(tokens.at(i) == "exit") {
+			stop = true;
+			}
+		}
+		if(stop) {
+			exit(0);
 			break;
 		}
 		for(unsigned int i = 0; i < tokens.size(); i++) {
