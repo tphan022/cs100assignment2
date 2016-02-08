@@ -68,6 +68,10 @@ void connectors(vector<string>* v, char** command) {
 	unsigned int i = 0;
 	int command_i = 0;
 	while(i < v->size()) {
+		if(v->at(i) == "exit") {
+			cout << "Program Exited." << endl;
+			exit(0);
+		}
 		if(v->at(i) == "#") {
 			command[command_i] = 0;
 			successful = run(command);
@@ -122,24 +126,10 @@ void connectors(vector<string>* v, char** command) {
 int main(void) {
 	char argument[1024];
 	vector<string> tokens;
-	bool stop = false;
 	char* command[64];
 	while(1) {
 		display(*argument);
 		tokenizing(*argument,&tokens);
-		for(unsigned int i = 0; i < tokens.size(); i++) {
-			if(tokens.at(i) == "exit") {
-			stop = true;
-			}
-		}
-		if(stop) {
-			exit(0);
-			break;
-		}
-		//for(unsigned int i = 0; i < tokens.size(); i++) {
-		//	cout << tokens.at(i) << " ";
-		//}
-		//cout << endl;
 		connectors(&tokens,command);
 		tokens.clear();
 	}
