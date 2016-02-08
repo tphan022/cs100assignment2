@@ -49,13 +49,12 @@ bool run(char** runcommand) {
 	}
 	else if(PID == 0) {
 		if(execvp(*runcommand, runcommand) < 0) {
-			cout << "running error" << endl;
+			cout << "Error: execution Error" << endl;
 			exit(1);
 		}
 	}
 	else {
 		while(wait(&s) != PID) {};
-		return true;
 	}
 	if(s != 0) {
 		return false;
