@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 using namespace std;
 
@@ -22,6 +24,7 @@ void display(char& argument) {
 	}
 }
 
+// This function turns the array of input characters into separate tokens(strings)
 void tokenizing(char& argument, vector<string>* v) {
 	char* ptr;
 	ptr = strtok(&argument, " \n");
@@ -37,6 +40,25 @@ void tokenizing(char& argument, vector<string>* v) {
 	}
 }
 
+void run(char** runcommand) {
+	pid_t PID;
+	int s;
+	if((PID = fork()) < 0) {
+		cout << "Error, forking failed" << endl;
+		exit(1);
+	}
+	else if(PID == 0) {
+		if(execvp(*runcommand, runcommand) < 0) {
+			cout << "running error";
+			exit(1);
+		}
+	}
+	else {
+		while(wait(&s) != PID) {};
+	}
+}
+
+void 
 
 int main(void) {
 	char argument[1024];
@@ -51,6 +73,14 @@ int main(void) {
 			cout << tokens.at(i) << " ";
 		}
 		cout << endl;
+		string tempo = tokens.at(0);
+		char* temp[64];
+		int q = 0;
+		temp[q] = (char*)tokens.at(0).c_str();
+		temp[q+1] = 0;
+		q++;
+		run(temp);
+		cout << endl << "Tempval: " << *temp << endl;
 		tokens.clear();
 	}
 
